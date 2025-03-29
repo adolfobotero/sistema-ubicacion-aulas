@@ -1,70 +1,119 @@
-# Getting Started with Create React App
+# 🏫 Sistema de Ubicación de Aulas – U. de Caldas
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este proyecto es un sistema inteligente que permite a estudiantes y administrativos encontrar la ubicación de aulas en la Universidad de Caldas mediante un panel de administración y un chatbot asistido con IA.
 
-## Available Scripts
+## 🔧 Tecnologías utilizadas
 
-In the project directory, you can run:
+- **Frontend:** React, CSS
+- **Backend:** Node.js, Express
+- **Base de datos:** PostgreSQL
+- **Autenticación:** Login con Google (OAuth2) y usuario/contraseña
+- **Patrones aplicados:** Factory Method, Proxy
 
-### `npm start`
+## 📁 Estructura del proyecto
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+/frontend
+├── src
+│   ├── assets/              # imágenes
+│   ├── components/          # componentes reutilizables
+│   ├── views/               # vistas/páginas como login, dashboard, chatbot
+│   ├── styles/              # CSS por vista
+│   └── App.js
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```
+/backend
+├── routes/                  # rutas de autenticación y administración
+├── controllers/            # lógica de login
+├── passport/               # estrategia de login con Google
+├── middlewares/            # proxy de roles
+├── models/                 # Factory Method para usuarios
+├── config/db.js            # conexión con PostgreSQL
+└── server.js
+```
 
-### `npm test`
+## 🚀 Instalación
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 1. Clona los repositorios
 
-### `npm run build`
+```bash
+git clone https://github.com/adolfobotero/sistema-ubicacion-aulas.git
+git clone https://github.com/adolfobotero/backend-ubicacion-aulas.git
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 2. Backend
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+cd backend-ubicacion-aulas
+npm install
+```
 
-### `npm run eject`
+Crea un archivo `.env`:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+PORT=3001
+JWT_SECRET=clave_super_secreta
+GOOGLE_CLIENT_ID=TU_CLIENT_ID
+GOOGLE_CLIENT_SECRET=TU_CLIENT_SECRET
+GOOGLE_CALLBACK=http://localhost:3001/auth/google/callback
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Crea la base de datos en PostgreSQL con la tabla `usuarios`. Aquí un ejemplo:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```sql
+CREATE TABLE usuarios (
+  idusuario SERIAL PRIMARY KEY,
+  codeusuario TEXT,
+  nombrecompleto TEXT NOT NULL,
+  mailusuario TEXT NOT NULL,
+  passusuario TEXT,
+  rolusuario TEXT,
+  metodologin TEXT
+);
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Luego ejecuta:
 
-## Learn More
+```bash
+node server.js
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 3. Frontend
 
-### Code Splitting
+```bash
+cd sistema-ubicacion-aulas
+npm install
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## 🔐 Accesos protegidos
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- Solo los usuarios con rol `"admin"` acceden a `/admin/dashboard`
+- Los estudiantes o administradores pueden entrar a `/chatbot`
+- Se usa `PrivateRoute` con JWT y Proxy en backend para proteger rutas
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 👨‍💻 Autor
 
-### Advanced Configuration
+- **Luis Adolfo Botero** – Universidad Católica de Pereira
+- Contacto: [GitHub](https://github.com/adolfobotero)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## 📷 Captura
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+![Login Screenshot](./public/assets/screenshot-login.jpg)
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 📌 Licencia
+
+MIT

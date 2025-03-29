@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { jwtDecode } from 'jwt-decode';
 import '../styles/Login.css';
 
 const LoginForm = () => {
@@ -11,13 +12,33 @@ const LoginForm = () => {
 
   useEffect(() => {
     const query = new URLSearchParams(location.search);
+    const token = query.get('token');
     const googleError = query.get('error');
   
     if (googleError === 'google') {
       setErrorMsg('Falló la autenticación con Google. Intente nuevamente.');
     }
-  }, [location]);
+    //Si hay token en la URL, se guarda en el localStorage y se redirige al usuario según su rol
+    if (token) {
+      try {
+        localStorage.setItem('token', token);
 
+        const { rol } = jwtDecode(token); // Decodifica el token para obtener el rol del usuario
+
+        if (rol === 'admin') {
+          navigate('/admin/dashboard');
+        } else {
+          navigate('/chatbot');
+        }
+        
+        window.history.replaceState({}, document.title, "/"); // Elimina el token de la URL para evitar que se vuelva a usar
+
+      } catch (err) {
+        console.error('Token inválido');
+        setErrorMsg('Sesión inválida. Intente nuevamente.');
+      }
+    }
+  }, [location, navigate]);
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMsg('');
@@ -57,13 +78,30 @@ const LoginForm = () => {
 
   return (
     <div className="login-container">
-      <div className="login-left">
-        <img src="/assets/logo-ucaldas.png" alt="Universidad de Caldas" />
-        <h2>
-        <em>"Tradición que inspira, tecnología que conecta.<br />¡Encuentra tu aula con inteligencia artificial!"</em>
+      <div
+        className="login-left"
+        style={{
+          backgroundImage: `url(${process.env.PUBLIC_URL + '/assets/fondo-login.png'})`,
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundColor: '#001f5b',
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+          padding: '2rem',
+          color: 'white',
+          fontFamily: '"Times New Roman", serif'
+        }}
+      >
+        <h2 style={{ zIndex: 1 }}>
+          "Tradición que inspira, tecnología que conecta.<br />¡Encuentra tu aula con inteligencia artificial!"
         </h2>
       </div>
-
+      
       <div className="login-right">
         <h2>Iniciar sesión</h2>
 
@@ -103,58 +141,3 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
-
-/* PRUEBAS ANTERIORES DE INICIO DE SESIÓN LOCAL
-
-import React from 'react';
-import '../styles/Login.css';
-import { useNavigate } from 'react-router-dom';
-
-const LoginForm = () => {
-  const navigate = useNavigate();
-  const handleLogin = (e) => {
-    e.preventDefault();
-    // Aquí irá la lógica para conectar con backend
-
-    const email = e.target[0].value;
-      // Simulamos un login local con rol basado en email
-    if (email.endsWith('@ucaldas.edu.co')) {
-      navigate('/chatbot'); // Gmail => Chatbot
-    } else {
-      navigate('/admin/dashboard'); // Admin => Dashboard
-    }
-  };
-
-  const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3001/auth/google"; // Ruta del backend
-  };
-  
-  return (
-    <div className="login-container">
-      <div className="login-left">
-        <img src="/assets/logo-ucaldas.png" alt="Universidad de Caldas" />
-        <h2>"Tradición que inspira, tecnología que conecta.<br />¡Encuentra tu aula con inteligencia artificial!"</h2>
-      </div>
-
-      <div className="login-right">
-        <h2>Iniciar sesión</h2>
-        <form onSubmit={handleLogin}>
-          <input type="email" placeholder="Ingrese su correo electrónico" required />
-          <input type="password" placeholder="Contraseña" required />
-          <div className="recover">Recuperar contraseña</div>
-          <button type="submit" className="login-btn">Iniciar sesión</button>
-        </form>
-
-        <div className="divider">O continuar con</div>
-        <button onClick={handleGoogleLogin} className="google-btn">
-          <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" />
-          Google
-        </button>
-      </div>
-    </div>
-  );
-};
-
-export default LoginForm;
-*/
-

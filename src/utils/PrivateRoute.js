@@ -1,25 +1,33 @@
+import React, { useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
-const PrivateRoute = ({ children, requireAdmin = false }) => {
+const PrivateRoute = ({ children, allowedRoles }) => {
   const location = useLocation();
-  const tokenInURL = new URLSearchParams(location.search).get('token');
 
-  if (tokenInURL) {
-    localStorage.setItem('token', tokenInURL);
-  }
+  // 1. Si el token está en la URL, lo guardamos
+  useEffect(() => {
+    const query = new URLSearchParams(location.search);
+    const tokenFromURL = query.get('token');
+    if (tokenFromURL) {
+      localStorage.setItem('token', tokenFromURL);
+      // Limpia la URL
+      window.history.replaceState({}, document.title, location.pathname);
+      window.location.reload();
+    }
+  }, [location]);
 
   const token = localStorage.getItem('token');
-  if (!token) return <Navigate to="/" />;
+  if (!token) return <Navigate to="/" replace />;
 
   try {
     const decoded = jwtDecode(token);
-    if (requireAdmin && decoded.rol !== 'admin') {
-      return <Navigate to="/" />;
+    if (!allowedRoles.includes(decoded.rol)) {
+      return <Navigate to="/" replace />;
     }
     return children;
-  } catch {
-    return <Navigate to="/" />;
+  } catch (err) {
+    return <Navigate to="/" replace />;
   }
 };
 
