@@ -61,18 +61,28 @@ GOOGLE_CLIENT_SECRET=TU_CLIENT_SECRET
 GOOGLE_CALLBACK=http://localhost:3001/auth/google/callback
 ```
 
-Crea la base de datos en PostgreSQL con la tabla `usuarios`. Aquí un ejemplo:
+Crea la base de datos con nombre `ubicacion_aulas` en PostgreSQL con la tabla `usuarios`.
 
 ```sql
+-- Eliminar la tabla si ya existe
+DROP TABLE IF EXISTS usuarios;
+
+-- Crear tabla
 CREATE TABLE usuarios (
-  idusuario SERIAL PRIMARY KEY,
-  codeusuario TEXT,
-  nombrecompleto TEXT NOT NULL,
-  mailusuario TEXT NOT NULL,
-  passusuario TEXT,
-  rolusuario TEXT,
-  metodologin TEXT
+    idUsuario SERIAL PRIMARY KEY,
+    codeUsuario VARCHAR(50) NOT NULL,
+    nombreCompleto VARCHAR(100) NOT NULL,
+    mailUsuario VARCHAR(100) UNIQUE NOT NULL,
+    passUsuario TEXT,
+    rolUsuario VARCHAR(50) NOT NULL DEFAULT 'admin',
+    metodoLogin VARCHAR(50) NOT NULL DEFAULT 'local'
 );
+
+-- Insertar usuarios administrativos (login con correo y contraseña)
+-- Contraseñas hasheadas con bcrypt (clave original: admin25)
+INSERT INTO usuarios (codeUsuario, nombreCompleto, mailUsuario, passUsuario, rolUsuario, metodoLogin)
+VALUES 
+('ADM001', 'Administrador', 'admin@ucaldas.edu.co', '$2b$10$YcIPq/KvskKCasmI3u567OV721fZRP/xdXjjJUCfPVHr92y3XokVW', 'admin', 'local');
 ```
 
 Luego ejecuta:
@@ -103,7 +113,7 @@ npm start
 
 ## 👨‍💻 Autor
 
-- **Luis Adolfo Botero** – Universidad Católica de Pereira
+- **Luis Adolfo Botero** – Universidad de Caldas
 - Contacto: [GitHub](https://github.com/adolfobotero)
 
 ---
@@ -116,4 +126,5 @@ npm start
 
 ## 📌 Licencia
 
-MIT
+Universidad de Caldas
+Manizales - Colombia
