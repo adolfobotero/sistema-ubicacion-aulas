@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/Sedes.css';
+import '../styles/Gestion.css';
 import ActionButton from '../components/ActionButton';
 
 
@@ -101,10 +101,10 @@ const Sedes = () => {
   };
 
   return (
-    <div className="sedes-container">
+    <div className="form-container">
       <h2>Gestión de Sedes 🏢</h2>
 
-      <form onSubmit={handleAddOrUpdateSede} className="sede-form">
+      <form onSubmit={handleAddOrUpdateSede} className="form-flex">
         <input
           type="text"
           name="nombreSede"
@@ -148,7 +148,7 @@ const Sedes = () => {
       {!loading && sedes.length === 0 && <p>No hay sedes registradas.</p>}
 
       {!loading && sedes.length > 0 && (
-        <table className="sedes-table">
+        <table className="data-table">
           <thead>
             <tr>
               <th>ID</th>

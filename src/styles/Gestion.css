@@ -1,18 +1,21 @@
-.sedes-container {
-  padding: 0.3rem;
+/* 📦 Contenedor reutilizable */
+.form-container {
+  padding: 0.1rem;
   max-width: 100%;
 }
 
-.sede-form {
+/* 🧱 Formulario con inputs alineados */
+.form-flex {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  align-items: center;
+  align-items: flex-start;
   margin-top: 1rem;
   margin-bottom: 2rem;
 }
 
-.sede-form input {
+.form-flex input,
+.form-flex select {
   flex: 1 1 50px;
   padding: 0.6rem 0.75rem;
   font-size: 0.95rem;
@@ -21,10 +24,11 @@
   height: 42px;
 }
 
-.sede-form button {
-  padding: 0.6rem 1rem;
+.form-flex button {
+  flex: 1 1 50px;
+  padding: 0.6rem 0.75rem;
   font-size: 0.95rem;
-  background-color: #005baa;
+  background-color: #001f5b;
   color: white;
   border: none;
   border-radius: 6px;
@@ -34,27 +38,52 @@
   white-space: nowrap;
 }
 
-.sede-form button:hover {
+.form-flex button:hover {
   background-color: #004080;
 }
 
-.sedes-table {
+/* 📊 Tabla reutilizable */
+.data-table {
   width: 100%;
   border-collapse: collapse;
   overflow-x: auto;
 }
 
-.sedes-table th,
-.sedes-table td {
+.data-table th,
+.data-table td {
   border: 1px solid #ccc;
   padding: 0.6rem;
   text-align: left;
 }
 
-.sedes-table th {
+.data-table th {
   background-color: #f0f0f0;
 }
 
+/* 🔁 Paginación */
+.paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.paginacion button {
+  background-color: #001f5b;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.paginacion button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* ❗ Error */
 .error-msg {
   background-color: #ffe6e6;
   color: #b30000;
@@ -65,25 +94,25 @@
 
 /* 📱 Responsive */
 @media screen and (max-width: 768px) {
-  .sede-form {
+  .form-flex {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .sede-form input,
-  .sede-form button {
+  .form-flex input,
+  .form-flex button {
     width: 100%;
     height: 42px;
   }
 
-  .sedes-table {
+  .data-table {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
   }
 
-  .sedes-table th,
-  .sedes-table td {
+  .data-table th,
+  .data-table td {
     font-size: 0.9rem;
     padding: 0.5rem;
   }

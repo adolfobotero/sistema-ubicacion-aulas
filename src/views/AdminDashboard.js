@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/AdminDashboard.css';
+import Usuarios from './Usuarios';
 import Sedes from './Sedes';
 
 const AdminDashboard = () => {
@@ -24,7 +25,7 @@ const AdminDashboard = () => {
       case 'profesores':
         return <p>Gestión de Profesores 👨‍🏫</p>;
       case 'usuarios':
-        return <p>Gestión de Usuarios 👤</p>;
+        return <Usuarios />;
       default:
         return <p>Bienvenido al Panel de Administración del Sistema de Ubicación de Aulas.</p>;
     }
