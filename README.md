@@ -126,5 +126,5 @@ npm start
 
 ## 📌 Licencia
 
-Universidad de Caldas
-Manizales - Colombia
+- Universidad de Caldas
+- Manizales - Colombia

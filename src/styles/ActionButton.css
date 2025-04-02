@@ -1,0 +1,38 @@
+.action-btn {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 6px;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .action-btn.edit {
+    background-color: #f1c40f;
+    color: #333;
+  }
+  
+  .action-btn.edit:hover {
+    background-color: #d4ac0d;
+  }
+  
+  .action-btn.delete {
+    background-color: #e74c3c;
+    color: white;
+  }
+  
+  .action-btn.delete:hover {
+    background-color: #c0392b;
+  }
+  
+  .action-btn.default {
+    background-color: #005baa;
+    color: white;
+  }
+  
+  .action-btn.default:hover {
+    background-color: #003f80;
+  }
+  
