@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/AdminDashboard.css';
 import Usuarios from './Usuarios';
 import Sedes from './Sedes';
+import Profesores from './Profesores';
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('inicio');
@@ -23,7 +24,7 @@ const AdminDashboard = () => {
       case 'sedes':
         return <Sedes />;
       case 'profesores':
-        return <p>Gestión de Profesores 👨‍🏫</p>;
+        return <Profesores />;
       case 'usuarios':
         return <Usuarios />;
       default:

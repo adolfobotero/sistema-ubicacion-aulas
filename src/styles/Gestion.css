@@ -60,6 +60,40 @@
   background-color: #f0f0f0;
 }
 
+/* Búsqueda e importación desde Excel */
+.import-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  padding: 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  flex: 1;
+  min-width: 250px;
+  max-width: 400px;
+  font-size: 0.95rem;
+}
+
+.import-btn {
+  background-color: #001f5b;
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.import-btn:hover {
+  background-color: #004080;
+}
+
 /* 🔁 Paginación */
 .paginacion {
   display: flex;
