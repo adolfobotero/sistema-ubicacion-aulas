@@ -1,26 +1,51 @@
+// ✅ AdminDashboard.js (ajustado para pasar funciones como props)
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/AdminDashboard.css';
 import Usuarios from './Usuarios';
 import Sedes from './Sedes';
 import Profesores from './Profesores';
+import Asignaturas from './Asignaturas';
+import AsignarProfesores from './AsignarProfesores';
+import Aulas from './Aulas';
+import AsignarAulas from './AsignarAulas';
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('inicio');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [asignaturaSeleccionada, setAsignaturaSeleccionada] = useState(null);
+  const [asignaturaAulaSeleccionada, setAsignaturaAulaSeleccionada] = useState(null);
   const navigate = useNavigate();
-  
+
   const handleLogout = () => {
-  localStorage.removeItem('token');
-  navigate('/');
-};
+    localStorage.removeItem('token');
+    navigate('/');
+  };
 
   const renderContent = () => {
+    if (activeSection === 'asignarProfesores') {
+      return <AsignarProfesores asignatura={asignaturaSeleccionada} setActiveSection={setActiveSection} />;
+    }
+    if (activeSection === 'asignarAulas') {
+      return <AsignarAulas aula={asignaturaAulaSeleccionada} setActiveSection={setActiveSection} />;
+    }
+
     switch (activeSection) {
       case 'aulas':
-        return <p>Gestión de Aulas 🏢</p>;
+        return (
+          <Aulas
+            setAsignaturaAulaSeleccionada={setAsignaturaAulaSeleccionada}
+            setActiveSection={setActiveSection}
+          />
+        );
       case 'asignaturas':
-        return <p>Gestión de Asignaturas 📚</p>;    
+        return (
+          <Asignaturas
+            setAsignaturaSeleccionada={setAsignaturaSeleccionada}
+            setActiveSection={setActiveSection}
+          />
+        );
       case 'sedes':
         return <Sedes />;
       case 'profesores':
@@ -33,17 +58,12 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    // Cierra menú al cambiar de sección (en móvil)
     setMenuOpen(false);
   }, [activeSection]);
 
   return (
     <div className="dashboard-container">
-      <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
-      ☰
-      </button>
-
-      {/* Capa oscura al fondo cuando el menú está abierto */}
+      <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>☰</button>
       {menuOpen && <div className="overlay" onClick={() => setMenuOpen(false)}></div>}
 
       <aside className={`sidebar ${menuOpen ? 'open' : ''}`}>

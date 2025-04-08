@@ -126,13 +126,13 @@ const LoginForm = () => {
             onChange={(e) => setPass(e.target.value)}
             required
           />
-          <div className="recover">Recuperar contraseña</div>
+          { /*<div className="recover">Recuperar contraseña</div>*/ }
           <button type="submit" className="login-btn">Iniciar sesión</button>
         </form>
 
         <div className="divider">O continuar con</div>
         <button onClick={handleGoogleLogin} className="google-btn">
-          <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" />
+          <img src="/assets/g-logo.png" alt="Google logo" />
           Google
         </button>
       </div>

@@ -184,7 +184,10 @@ const Profesores = () => {
           type="text"
           placeholder="Buscar por nombre o correo..."
           value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
+          onChange={(e) => {
+            setBusqueda(e.target.value);
+            setPaginaActual(1);
+          }}
           className="search-input"
         />
 
@@ -203,7 +206,7 @@ const Profesores = () => {
       <table className="data-table">
         <thead>
           <tr>
-            <th>ID</th>
+            {/* <th>ID</th> */}
             <th>Código</th>
             <th>Nombre</th>
             <th>Correo</th>
@@ -213,7 +216,7 @@ const Profesores = () => {
         <tbody>
           {profesoresEnPagina.map((p) => (
             <tr key={p.idprofesor}>
-              <td>{p.idprofesor}</td>
+              {/* <td>{p.idprofesor}</td> */}
               <td>{p.codeprofesor}</td>
               <td>{p.nombreprofesor}</td>
               <td>{p.mailprofesor}</td>

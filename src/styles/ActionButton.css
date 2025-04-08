@@ -24,6 +24,15 @@
     background-color: #e74c3c;
     color: white;
   }
+
+  .action-btn.view {
+    background-color: #a8a7ac;
+    color: #333;
+  }
+  
+  .action-btn.view:hover {
+    background-color: #677373;
+  }
   
   .action-btn.delete:hover {
     background-color: #c0392b;

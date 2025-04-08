@@ -162,26 +162,23 @@ const Usuarios = () => {
 
       {error && <div className="error-msg">{error}</div>}
 
-      <div style={{ marginBottom: '1rem' }}>
+      <div className="import-container">
         <input
           type="text"
           placeholder="Buscar por nombre o correo..."
           value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          style={{
-            padding: '0.6rem',
-            width: '100%',
-            maxWidth: '400px',
-            borderRadius: '6px',
-            border: '1px solid #ccc'
+          onChange={(e) => {
+            setBusqueda(e.target.value);
+            setPaginaActual(1);
           }}
+          className="search-input"
         />
       </div>
 
       <table className="data-table">
         <thead>
           <tr>
-            <th>ID</th>
+            {/* <th>ID</th> */}
             <th>Código</th>
             <th>Nombre</th>
             <th>Correo</th>
@@ -193,7 +190,7 @@ const Usuarios = () => {
         <tbody>
           {usuariosEnPagina.map((u) => (
             <tr key={u.idusuario}>
-              <td>{u.idusuario}</td>
+              {/* <td>{u.idusuario}</td> */}
               <td>{u.codeusuario}</td>
               <td>{u.nombrecompleto}</td>
               <td>{u.mailusuario}</td>

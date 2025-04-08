@@ -102,7 +102,7 @@ const Sedes = () => {
 
   return (
     <div className="form-container">
-      <h2>Gestión de Sedes 🏢</h2>
+      <h2>Gestión de Sedes 🏬</h2>
 
       <form onSubmit={handleAddOrUpdateSede} className="form-flex">
         <input
@@ -151,7 +151,7 @@ const Sedes = () => {
         <table className="data-table">
           <thead>
             <tr>
-              <th>ID</th>
+              {/* <th>ID</th> */}
               <th>Nombre</th>
               <th>Dirección</th>
               <th>Latitud</th>
@@ -162,7 +162,7 @@ const Sedes = () => {
           <tbody>
             {sedes.map((sede) => (
               <tr key={sede.idsede}>
-                <td>{sede.idsede}</td>
+                {/* <td>{sede.idsede}</td> */ }
                 <td>{sede.nombresede}</td>
                 <td>{sede.direccionsede}</td>
                 <td>{sede.latitudsede}</td>
