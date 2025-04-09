@@ -33,6 +33,15 @@
   .action-btn.view:hover {
     background-color: #677373;
   }
+
+  .action-btn.info {
+    background-color: #a6a4af;
+    color: #333;
+  }
+  
+  .action-btn.info:hover {
+    background-color: #606969;
+  }
   
   .action-btn.delete:hover {
     background-color: #c0392b;

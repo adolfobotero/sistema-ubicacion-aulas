@@ -1,0 +1,67 @@
+.inicio-container {
+    padding: 2rem;
+    background-color: #f7f9fc;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  }
+  
+  .inicio-container h2 {
+    font-size: 1.6rem;
+    color: #001f5b;
+    margin-bottom: 0.5rem;
+  }
+  
+  .usuario-bienvenida {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 2rem;
+  }
+  
+  .tarjetas-dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  
+  .tarjeta {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    flex: 1 1 200px;
+    min-width: 180px;
+    max-width: 250px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    transition: transform 0.2s ease;
+    border: 2px solid #e0e6f1;
+  }
+  
+  .tarjeta:hover {
+    transform: scale(1.03);
+    border-color: #0056b3;
+  }
+  
+  .tarjeta h3 {
+    font-size: 2rem;
+    color: #001f5b;
+    margin: 0;
+  }
+  
+  .tarjeta p {
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    color: #555;
+  }
+  
+  /* Responsive */
+  @media screen and (max-width: 768px) {
+    .tarjetas-dashboard {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .tarjeta {
+      max-width: 100%;
+    }
+  }
+  

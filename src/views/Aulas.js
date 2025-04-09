@@ -1,16 +1,17 @@
-// src/views/Aulas.js
 import React, { useState, useEffect } from 'react';
 import '../styles/Gestion.css';
 import ActionButton from '../components/ActionButton';
 
-const Aulas = ({ setActiveSection, setAsignaturaAulaSeleccionada }) => {
+const Aulas = ({ setAsignaturaAulaSeleccionada, setAulaSeleccionada, setActiveSection }) => {
   const [aulas, setAulas] = useState([]);
   const [sedes, setSedes] = useState([]);
   const [form, setForm] = useState({
     codeAula: '',
     nombreAula: '',
     capAula: '',
-    idSedeActual: ''
+    idSedeActual: '',
+    edificioAula: '',
+    pisoAula: ''
   });
   const [editandoId, setEditandoId] = useState(null);
   const [error, setError] = useState('');
@@ -57,15 +58,20 @@ const Aulas = ({ setActiveSection, setAsignaturaAulaSeleccionada }) => {
     const method = editandoId ? 'PUT' : 'POST';
 
     try {
+      const token = localStorage.getItem('token');
+      
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(form)
       });
 
       if (!res.ok) throw new Error('Error al guardar aula');
       await fetchAulas();
-      setForm({ codeAula: '', nombreAula: '', capAula: '', idSedeActual: '' });
+      setForm({ codeAula: '', nombreAula: '', capAula: '', idSedeActual: '', edificioAula: '', pisoAula: '' });
       setEditandoId(null);
       setError('');
     } catch (err) {
@@ -79,7 +85,9 @@ const Aulas = ({ setActiveSection, setAsignaturaAulaSeleccionada }) => {
       codeAula: aula.codeaula,
       nombreAula: aula.nombreaula,
       capAula: aula.capaula,
-      idSedeActual: aula.idsedeactual
+      idSedeActual: aula.idsedeactual,
+      edificioAula: aula.edificioaula,
+      pisoAula: aula.pisoaula
     });
     setEditandoId(aula.idaula);
   };
@@ -148,6 +156,23 @@ const Aulas = ({ setActiveSection, setAsignaturaAulaSeleccionada }) => {
             </option>
           ))}
         </select>
+        <input
+          type="text"
+          name="edificioAula"
+          placeholder="Edificio o Torre"
+          value={form.edificioAula}
+          onChange={handleInputChange}
+          required
+        />
+
+        <input
+          type="text"
+          name="pisoAula"
+          placeholder="Piso"
+          value={form.pisoAula}
+          onChange={handleInputChange}
+          required
+        />        
         <button type="submit">{editandoId ? 'Actualizar' : 'Agregar Aula'}</button>
       </form>
 
@@ -173,6 +198,8 @@ const Aulas = ({ setActiveSection, setAsignaturaAulaSeleccionada }) => {
             <th>Nombre del Aula</th>
             <th>Capacidad</th>
             <th>Sede</th>
+            <th>Edificio</th>
+            <th>Piso</th>            
             <th>Acciones</th>
           </tr>
         </thead>
@@ -183,6 +210,8 @@ const Aulas = ({ setActiveSection, setAsignaturaAulaSeleccionada }) => {
               <td>{aula.nombreaula}</td>
               <td>{aula.capaula}</td>
               <td>{aula.nombresede}</td>
+              <td>{aula.edificioaula}</td>
+              <td>{aula.pisoaula}</td>
               <td>
                 <ActionButton
                   text="Asignar"
@@ -190,6 +219,14 @@ const Aulas = ({ setActiveSection, setAsignaturaAulaSeleccionada }) => {
                   onClick={() => {
                     setAsignaturaAulaSeleccionada(aula);
                     setActiveSection('asignarAulas');
+                  }}
+                />
+                <ActionButton
+                  text="Historial"
+                  type="info"
+                  onClick={() => {
+                    setAulaSeleccionada(aula);
+                    setActiveSection('historialAula');
                   }}
                 />
                 <ActionButton text="Editar" type="edit" onClick={() => handleEdit(aula)} />

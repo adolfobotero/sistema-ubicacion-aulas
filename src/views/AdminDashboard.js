@@ -10,12 +10,15 @@ import Asignaturas from './Asignaturas';
 import AsignarProfesores from './AsignarProfesores';
 import Aulas from './Aulas';
 import AsignarAulas from './AsignarAulas';
+import HistorialAula from './HistorialAula';
+import InicioDashboard from './InicioDashboard';
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('inicio');
   const [menuOpen, setMenuOpen] = useState(false);
   const [asignaturaSeleccionada, setAsignaturaSeleccionada] = useState(null);
   const [asignaturaAulaSeleccionada, setAsignaturaAulaSeleccionada] = useState(null);
+  const [aulaSeleccionada, setAulaSeleccionada] = useState(null);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -30,12 +33,16 @@ const AdminDashboard = () => {
     if (activeSection === 'asignarAulas') {
       return <AsignarAulas aula={asignaturaAulaSeleccionada} setActiveSection={setActiveSection} />;
     }
+    if (activeSection === 'historialAula') {
+      return <HistorialAula aula={aulaSeleccionada} setActiveSection={setActiveSection} />;
+    }    
 
     switch (activeSection) {
       case 'aulas':
         return (
           <Aulas
             setAsignaturaAulaSeleccionada={setAsignaturaAulaSeleccionada}
+            setAulaSeleccionada={setAulaSeleccionada}
             setActiveSection={setActiveSection}
           />
         );
@@ -53,7 +60,7 @@ const AdminDashboard = () => {
       case 'usuarios':
         return <Usuarios />;
       default:
-        return <p>Bienvenido al Panel de Administración del Sistema de Ubicación de Aulas.</p>;
+        return <InicioDashboard />;
     }
   };
 
