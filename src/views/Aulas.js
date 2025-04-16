@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '../styles/Gestion.css';
 import ActionButton from '../components/ActionButton';
 import * as XLSX from 'xlsx';
@@ -21,12 +21,7 @@ const Aulas = ({ setAsignaturaAulaSeleccionada, setActiveSection}) => {
   const [busqueda, setBusqueda] = useState('');
   const porPagina = 5;
 
-  useEffect(() => {
-    fetchAulas();
-    fetchSedes();
-  }, [paginaActual, busqueda]);
-
-  const fetchAulas = async () => {
+  const fetchAulas = useCallback (async () => {
     try {
       const res = await fetch(`http://localhost:3001/api/aulas?pagina=${paginaActual}&limite=${porPagina}&busqueda=${encodeURIComponent(busqueda)}`);
       const data = await res.json();
@@ -36,7 +31,12 @@ const Aulas = ({ setAsignaturaAulaSeleccionada, setActiveSection}) => {
       console.error(err);
       setError('Error al cargar las aulas.');
     }
-  };
+  }, [paginaActual, busqueda]);
+
+  useEffect(() => {
+    fetchAulas();
+    fetchSedes();
+  }, [fetchAulas]);
 
   const handleImportExcel = (e) => {
     const file = e.target.files[0];

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '../styles/Gestion.css';
 import ActionButton from '../components/ActionButton';
 import * as XLSX from 'xlsx';
@@ -13,11 +13,7 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
   const [total, setTotal] = useState(0);
   const porPagina = 5;
 
-  useEffect(() => {
-    fetchAsignaturas();
-  }, [paginaActual, busqueda]);
-
-  const fetchAsignaturas = async () => {
+  const fetchAsignaturas = useCallback (async () => {
     try {
       const res = await fetch(`http://localhost:3001/api/asignaturas?pagina=${paginaActual}&limite=${porPagina}&busqueda=${encodeURIComponent(busqueda)}`);
       const data = await res.json();
@@ -27,7 +23,11 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
       console.error(err);
       setError('Error al cargar asignaturas.');
     }
-  };
+  }, [paginaActual, busqueda]);
+
+  useEffect(() => {
+    fetchAsignaturas();
+  }, [fetchAsignaturas]);
 
   const handleImportExcel = (e) => {
     const file = e.target.files[0];

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import '../styles/Gestion.css';
 import ActionButton from '../components/ActionButton';
 
@@ -19,11 +19,7 @@ const Usuarios = () => {
   const [total, setTotal] = useState(0);
   const porPagina = 5;
 
-  useEffect(() => {
-    fetchUsuarios();
-  }, [paginaActual, busqueda]);
-
-  const fetchUsuarios = async () => {
+  const fetchUsuarios = useCallback (async () => {
     try {
       const res = await fetch(`http://localhost:3001/api/usuarios?pagina=${paginaActual}&limite=${porPagina}&busqueda=${encodeURIComponent(busqueda)}`);
       const data = await res.json();
@@ -33,7 +29,11 @@ const Usuarios = () => {
       setError('Error al cargar los usuarios.');
       console.error(err);
     }
-  };
+  }, [paginaActual, busqueda]);
+
+  useEffect(() => {
+    fetchUsuarios();
+  }, [fetchUsuarios]);
 
   const handleInputChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
