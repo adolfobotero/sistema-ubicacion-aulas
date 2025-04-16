@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/Gestion.css';
 import ActionButton from '../components/ActionButton';
-
+import * as XLSX from 'xlsx';
 
 const Sedes = () => {
   const [sedes, setSedes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [form, setForm] = useState({
+    codeSede: '',
     nombreSede: '',
     direccionSede: '',
     latitudSede: '',
@@ -33,6 +34,37 @@ const Sedes = () => {
     }
   };
 
+  const handleImportExcel = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+  
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const data = new Uint8Array(event.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet);
+  
+      const sedesValidas = rows.filter(s => s.codeSede && s.nombreSede);
+  
+      try {
+        const res = await fetch('http://localhost:3001/api/sedes/importar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
+          body: JSON.stringify({ sedes: sedesValidas })
+        });
+  
+        const result = await res.json();
+        alert(`Se importaron ${result.insertados} sedes.\nSe ignoraron ${result.ignorados} registros inválidos o duplicados.`);
+        fetchSedes(); // Si tienes esta función para recargar
+      } catch (err) {
+        console.error(err);
+        alert('Error al importar sedes.');
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  };  
+
   const handleInputChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -40,9 +72,9 @@ const Sedes = () => {
   const handleAddOrUpdateSede = async (e) => {
     e.preventDefault();
 
-    const { nombreSede, direccionSede, latitudSede, longitudSede } = form;
+    const { codeSede, nombreSede, direccionSede, latitudSede, longitudSede } = form;
 
-    if (!nombreSede || !direccionSede || latitudSede === '' || longitudSede === '') {
+    if (!codeSede || !nombreSede || !direccionSede || latitudSede === '' || longitudSede === '') {
       alert('Todos los campos son obligatorios');
       return;
     }
@@ -58,6 +90,7 @@ const Sedes = () => {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          codeSede,
           nombreSede,
           direccionSede,
           latitudSede: parseFloat(latitudSede),
@@ -68,7 +101,7 @@ const Sedes = () => {
       if (!response.ok) throw new Error('Error al guardar sede');
 
       await fetchSedes();
-      setForm({ nombreSede: '', direccionSede: '', latitudSede: '', longitudSede: '' });
+      setForm({ codeSede: '', nombreSede: '', direccionSede: '', latitudSede: '', longitudSede: '' });
       setEditandoId(null);
     } catch (err) {
       console.error(err.message);
@@ -78,6 +111,7 @@ const Sedes = () => {
 
   const handleEdit = (sede) => {
     setForm({
+      codeSede: sede.codesede,
       nombreSede: sede.nombresede,
       direccionSede: sede.direccionsede,
       latitudSede: sede.latitudsede,
@@ -105,6 +139,14 @@ const Sedes = () => {
       <h2>Gestión de Sedes 🏬</h2>
 
       <form onSubmit={handleAddOrUpdateSede} className="form-flex">
+        <input
+          type="text"
+          name="codeSede"
+          placeholder="Código de sede"
+          value={form.codeSede}
+          onChange={handleInputChange}
+          required
+        />
         <input
           type="text"
           name="nombreSede"
@@ -142,6 +184,14 @@ const Sedes = () => {
         <button type="submit">{editandoId ? 'Actualizar Sede' : 'Agregar Sede'}</button>
       </form>
 
+      <div className="import-container">
+        <label htmlFor="excel-upload" className="import-btn">Importar desde Excel</label>
+        <input id="excel-upload" type="file" accept=".xlsx, .xls" onChange={handleImportExcel} style={{ display: 'none' }} />
+        <button onClick={() => window.open('http://localhost:3001/api/sedes/exportar', '_blank')} className="export-btn">
+          Exportar a Excel
+        </button>
+      </div>
+
       {loading && <p>Cargando sedes...</p>}
       {error && <div className="error-msg">{error}</div>}
 
@@ -152,6 +202,7 @@ const Sedes = () => {
           <thead>
             <tr>
               {/* <th>ID</th> */}
+              <th>Código</th>
               <th>Nombre</th>
               <th>Dirección</th>
               <th>Latitud</th>
@@ -163,6 +214,7 @@ const Sedes = () => {
             {sedes.map((sede) => (
               <tr key={sede.idsede}>
                 {/* <td>{sede.idsede}</td> */ }
+                <td>{sede.codesede}</td>
                 <td>{sede.nombresede}</td>
                 <td>{sede.direccionsede}</td>
                 <td>{sede.latitudsede}</td>

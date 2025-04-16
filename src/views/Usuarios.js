@@ -16,17 +16,19 @@ const Usuarios = () => {
   const [error, setError] = useState('');
   const [busqueda, setBusqueda] = useState('');
   const [paginaActual, setPaginaActual] = useState(1);
-  const usuariosPorPagina = 5;
+  const [total, setTotal] = useState(0);
+  const porPagina = 5;
 
   useEffect(() => {
     fetchUsuarios();
-  }, []);
+  }, [paginaActual, busqueda]);
 
   const fetchUsuarios = async () => {
     try {
-      const res = await fetch('http://localhost:3001/api/usuarios');
+      const res = await fetch(`http://localhost:3001/api/usuarios?pagina=${paginaActual}&limite=${porPagina}&busqueda=${encodeURIComponent(busqueda)}`);
       const data = await res.json();
-      setUsuarios(data);
+      setUsuarios(data.registros);
+      setTotal(data.total);
     } catch (err) {
       setError('Error al cargar los usuarios.');
       console.error(err);
@@ -91,7 +93,6 @@ const Usuarios = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm('¿Eliminar este usuario?')) return;
-
     try {
       await fetch(`http://localhost:3001/api/usuarios/${id}`, { method: 'DELETE' });
       fetchUsuarios();
@@ -101,58 +102,16 @@ const Usuarios = () => {
     }
   };
 
-  const usuariosFiltrados = usuarios.filter((u) =>
-    u.nombrecompleto.toLowerCase().includes(busqueda.toLowerCase()) ||
-    u.mailusuario.toLowerCase().includes(busqueda.toLowerCase())
-  );
-
-  const totalPaginas = Math.ceil(usuariosFiltrados.length / usuariosPorPagina);
-  const indiceInicial = (paginaActual - 1) * usuariosPorPagina;
-  const usuariosEnPagina = usuariosFiltrados.slice(indiceInicial, indiceInicial + usuariosPorPagina);
-
   return (
     <div className="form-container">
       <h2>Gestión de Usuarios 👤</h2>
 
       <form onSubmit={handleSubmit} className="form-flex">
-        <input
-          type="text"
-          name="codeUsuario"
-          placeholder="Código"
-          value={form.codeUsuario}
-          onChange={handleInputChange}
-          required
-        />
-        <input
-          type="text"
-          name="nombreCompleto"
-          placeholder="Nombre completo"
-          value={form.nombreCompleto}
-          onChange={handleInputChange}
-          required
-        />
-        <input
-          type="email"
-          name="mailUsuario"
-          placeholder="Correo institucional"
-          value={form.mailUsuario}
-          onChange={handleInputChange}
-          required
-        />
-        <input
-          type="password"
-          name="passUsuario"
-          placeholder="Contraseña"
-          value={form.passUsuario}
-          onChange={handleInputChange}
-          required={!editandoId}
-        />
-        <select
-          name="rolUsuario"
-          value={form.rolUsuario}
-          onChange={handleInputChange}
-          required
-        >
+        <input type="text" name="codeUsuario" placeholder="Código" value={form.codeUsuario} onChange={handleInputChange} required />
+        <input type="text" name="nombreCompleto" placeholder="Nombre completo" value={form.nombreCompleto} onChange={handleInputChange} required />
+        <input type="email" name="mailUsuario" placeholder="Correo institucional" value={form.mailUsuario} onChange={handleInputChange} required />
+        <input type="password" name="passUsuario" placeholder="Contraseña" value={form.passUsuario} onChange={handleInputChange} required={!editandoId} />
+        <select name="rolUsuario" value={form.rolUsuario} onChange={handleInputChange} required>
           <option value="">Rol</option>
           <option value="admin">Admin</option>
           <option value="estudiante">Estudiante</option>
@@ -178,7 +137,6 @@ const Usuarios = () => {
       <table className="data-table">
         <thead>
           <tr>
-            {/* <th>ID</th> */}
             <th>Código</th>
             <th>Nombre</th>
             <th>Correo</th>
@@ -188,15 +146,12 @@ const Usuarios = () => {
           </tr>
         </thead>
         <tbody>
-          {usuariosEnPagina.map((u) => (
+          {usuarios.map((u) => (
             <tr key={u.idusuario}>
-              {/* <td>{u.idusuario}</td> */}
               <td>{u.codeusuario}</td>
               <td>{u.nombrecompleto}</td>
               <td>{u.mailusuario}</td>
-              <td>
-                <span className={`rol-tag ${u.rolusuario}`}>{u.rolusuario}</span>
-              </td>
+              <td><span className={`rol-tag ${u.rolusuario}`}>{u.rolusuario}</span></td>
               <td>{u.metodologin}</td>
               <td>
                 <ActionButton text="Editar" type="edit" onClick={() => handleEdit(u)} />
@@ -208,13 +163,9 @@ const Usuarios = () => {
       </table>
 
       <div className="paginacion">
-        <button onClick={() => setPaginaActual((prev) => Math.max(prev - 1, 1))} disabled={paginaActual === 1}>
-          ⬅ Anterior
-        </button>
-        <span>Página {paginaActual} de {totalPaginas}</span>
-        <button onClick={() => setPaginaActual((prev) => Math.min(prev + 1, totalPaginas))} disabled={paginaActual === totalPaginas}>
-          Siguiente ➡
-        </button>
+        <button onClick={() => setPaginaActual(p => Math.max(p - 1, 1))} disabled={paginaActual === 1}>⬅ Anterior</button>
+        <span>Página {paginaActual} de {Math.ceil(total / porPagina)}</span>
+        <button onClick={() => setPaginaActual(p => Math.min(p + 1, Math.ceil(total / porPagina)))} disabled={paginaActual >= Math.ceil(total / porPagina)}>Siguiente ➡</button>
       </div>
     </div>
   );

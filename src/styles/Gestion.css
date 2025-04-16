@@ -94,6 +94,21 @@
   background-color: #004080;
 }
 
+.export-btn {
+  background-color: #005b41;
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.export-btn:hover {
+  background-color: #008037;
+}
+
 /* 🔁 Paginación */
 .paginacion {
   display: flex;
@@ -170,4 +185,42 @@
     font-size: 0.9rem;
     padding: 0.5rem;
   }
+}
+
+.form-flex.reasignando {
+  border: 2px dashed #f39c12;
+  background-color: #fff8e6;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.reasignando h4 {
+  color: #c87f0a;
+  margin-bottom: 0.5rem;
+}
+
+.cancel-btn {
+  background-color: #bbb;
+  margin-left: 0.5rem;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background-color: #999;
+}
+
+.success-msg {
+  background-color: #e0f9e0;
+  color: #2e7d32;
+  padding: 0.75rem;
+  border: 1px solid #a5d6a7;
+  border-radius: 8px;
+  margin: 1rem 0;
+  text-align: center;
+  font-weight: bold;
 }

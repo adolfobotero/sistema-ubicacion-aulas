@@ -1,24 +1,23 @@
-// ✅ AdminDashboard.js (ajustado para pasar funciones como props)
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/AdminDashboard.css';
-import Usuarios from './Usuarios';
-import Sedes from './Sedes';
-import Profesores from './Profesores';
-import Asignaturas from './Asignaturas';
-import AsignarProfesores from './AsignarProfesores';
+import InicioDashboard from './InicioDashboard';
 import Aulas from './Aulas';
 import AsignarAulas from './AsignarAulas';
-import HistorialAula from './HistorialAula';
-import InicioDashboard from './InicioDashboard';
+import Asignaturas from './Asignaturas';
+import MoverAsignatura from './MoverAsignatura';
+import Profesores from './Profesores';
+import AsignarProfesores from './AsignarProfesores';
+import HistorialAsignaturaAula from './HistorialAsignaturaAula';
+import Sedes from './Sedes';
+import Usuarios from './Usuarios';
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('inicio');
   const [menuOpen, setMenuOpen] = useState(false);
   const [asignaturaSeleccionada, setAsignaturaSeleccionada] = useState(null);
   const [asignaturaAulaSeleccionada, setAsignaturaAulaSeleccionada] = useState(null);
-  const [aulaSeleccionada, setAulaSeleccionada] = useState(null);
+
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -33,19 +32,21 @@ const AdminDashboard = () => {
     if (activeSection === 'asignarAulas') {
       return <AsignarAulas aula={asignaturaAulaSeleccionada} setActiveSection={setActiveSection} />;
     }
-    if (activeSection === 'historialAula') {
-      return <HistorialAula aula={aulaSeleccionada} setActiveSection={setActiveSection} />;
-    }    
+    if (activeSection === 'historialAsignatura') {
+      return <HistorialAsignaturaAula asignatura={asignaturaSeleccionada} setActiveSection={setActiveSection} />;
+    }
 
     switch (activeSection) {
       case 'aulas':
         return (
           <Aulas
             setAsignaturaAulaSeleccionada={setAsignaturaAulaSeleccionada}
-            setAulaSeleccionada={setAulaSeleccionada}
             setActiveSection={setActiveSection}
           />
         );
+      case 'moverAsignatura':
+          return <MoverAsignatura setActiveSection={setActiveSection} />;
+
       case 'asignaturas':
         return (
           <Asignaturas
@@ -80,6 +81,7 @@ const AdminDashboard = () => {
         </div>
         <nav>
           <button onClick={() => setActiveSection('inicio')}>Inicio</button>
+          <button onClick={() => setActiveSection('moverAsignatura')}>Reubicaciones</button>
           <button onClick={() => setActiveSection('aulas')}>Aulas</button>
           <button onClick={() => setActiveSection('asignaturas')}>Asignaturas</button>
           <button onClick={() => setActiveSection('profesores')}>Profesores</button>

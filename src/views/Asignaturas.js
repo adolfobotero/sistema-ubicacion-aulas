@@ -1,34 +1,64 @@
-// src/views/Asignaturas.js
 import React, { useState, useEffect } from 'react';
 import '../styles/Gestion.css';
 import ActionButton from '../components/ActionButton';
+import * as XLSX from 'xlsx';
 
 const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
   const [asignaturas, setAsignaturas] = useState([]);
-  const [form, setForm] = useState({
-    codeAsignatura: '',
-    nombreAsignatura: ''
-  });
+  const [form, setForm] = useState({ codeAsignatura: '', nombreAsignatura: '' });
   const [editandoId, setEditandoId] = useState(null);
   const [error, setError] = useState('');
-  const [busqueda, setBusqueda] = useState('');
   const [paginaActual, setPaginaActual] = useState(1);
+  const [busqueda, setBusqueda] = useState('');
+  const [total, setTotal] = useState(0);
   const porPagina = 5;
 
   useEffect(() => {
     fetchAsignaturas();
-  }, []);
+  }, [paginaActual, busqueda]);
 
   const fetchAsignaturas = async () => {
     try {
-      const res = await fetch('http://localhost:3001/api/asignaturas');
+      const res = await fetch(`http://localhost:3001/api/asignaturas?pagina=${paginaActual}&limite=${porPagina}&busqueda=${encodeURIComponent(busqueda)}`);
       const data = await res.json();
-      setAsignaturas(data);
+      setAsignaturas(data.registros);
+      setTotal(data.total);
     } catch (err) {
       console.error(err);
       setError('Error al cargar asignaturas.');
     }
   };
+
+  const handleImportExcel = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+  
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const data = new Uint8Array(event.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet);
+  
+      const asignaturasValidas = rows.filter(a => a.codeAsignatura && a.nombreAsignatura);
+      
+      try {
+        const res = await fetch('http://localhost:3001/api/asignaturas/importar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
+          body: JSON.stringify({ asignaturas: asignaturasValidas })
+        });
+  
+        const result = await res.json();
+        alert(`Se importaron ${result.insertados} asignaturas.\nSe ignoraron ${result.ignorados} registros inválidos o duplicados.`);
+        fetchAsignaturas(); // si tienes esta función para refrescar
+      } catch (err) {
+        console.error(err);
+        alert('Error al importar asignaturas.');
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  };  
 
   const handleInputChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -60,19 +90,14 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
   };
 
   const handleEdit = (a) => {
-    setForm({
-      codeAsignatura: a.codeasignatura,
-      nombreAsignatura: a.nombreasignatura
-    });
+    setForm({ codeAsignatura: a.codeasignatura, nombreAsignatura: a.nombreasignatura });
     setEditandoId(a.idasignatura);
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm('¿Eliminar esta asignatura?')) return;
     try {
-      await fetch(`http://localhost:3001/api/asignaturas/${id}`, {
-        method: 'DELETE'
-      });
+      await fetch(`http://localhost:3001/api/asignaturas/${id}`, { method: 'DELETE' });
       fetchAsignaturas();
     } catch (err) {
       setError('Error al eliminar la asignatura.');
@@ -80,14 +105,7 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
     }
   };
 
-  const asignaturasFiltradas = asignaturas.filter((a) =>
-    a.nombreasignatura.toLowerCase().includes(busqueda.toLowerCase()) ||
-    a.codeasignatura.toLowerCase().includes(busqueda.toLowerCase())
-  );
-
-  const totalPaginas = Math.ceil(asignaturasFiltradas.length / porPagina);
-  const inicio = (paginaActual - 1) * porPagina;
-  const asignaturasEnPagina = asignaturasFiltradas.slice(inicio, inicio + porPagina);
+  const totalPaginas = Math.ceil(total / porPagina);
 
   return (
     <div className="form-container">
@@ -115,17 +133,23 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
 
       {error && <div className="error-msg">{error}</div>}
 
+      
       <div className="import-container">
-        <input
-          type="text"
-          placeholder="Buscar asignatura..."
-          value={busqueda}
-          onChange={(e) => {
-            setBusqueda(e.target.value);
-            setPaginaActual(1);
-          }}
-          className="search-input"
-        />
+      <input
+        type="text"
+        placeholder="Buscar asignatura..."
+        value={busqueda}
+        onChange={(e) => {
+          setBusqueda(e.target.value);
+          setPaginaActual(1);
+        }}
+        className="search-input"
+      />
+      <label htmlFor="excel-asignaturas-upload" className="import-btn">Importar desde Excel</label>
+      <input id="excel-asignaturas-upload" type="file" accept=".xlsx, .xls" onChange={handleImportExcel} style={{ display: 'none' }} />
+      <button onClick={() => window.open('http://localhost:3001/api/asignaturas/exportar', '_blank')} className="export-btn">
+        Exportar a Excel
+      </button>
       </div>
 
       <table className="data-table">
@@ -138,25 +162,29 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
           </tr>
         </thead>
         <tbody>
-          {asignaturasEnPagina.map((a) => (
-            <tr key={a.idasignatura}>
-              <td>{a.codeasignatura}</td>
-              <td>{a.nombreasignatura}</td>
-              <td>{a.profesores || 'No asignado'}</td>
-              <td>
-                <ActionButton
-                  text="Profesores"
-                  type="view"
-                  onClick={() => {
+          {asignaturas.length > 0 ? (
+            asignaturas.map((a) => (
+              <tr key={a.idasignatura}>
+                <td>{a.codeasignatura}</td>
+                <td>{a.nombreasignatura}</td>
+                <td>{a.profesores || 'No asignado'}</td>
+                <td>
+                  <ActionButton text="Profesores" type="view" onClick={() => {
                     setAsignaturaSeleccionada(a);
                     setActiveSection('asignarProfesores');
-                  }}
-                />
-                <ActionButton text="Editar" type="edit" onClick={() => handleEdit(a)} />
-                <ActionButton text="Eliminar" type="delete" onClick={() => handleDelete(a.idasignatura)} />
-              </td>
-            </tr>
-          ))}
+                  }} />
+                  <ActionButton text="Historial" type="info" onClick={() => {
+                    setAsignaturaSeleccionada(a);
+                    setActiveSection('historialAsignatura');
+                  }} />
+                  <ActionButton text="Editar" type="edit" onClick={() => handleEdit(a)} />
+                  <ActionButton text="Eliminar" type="delete" onClick={() => handleDelete(a.idasignatura)} />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr><td colSpan="4">No hay asignaturas registradas.</td></tr>
+          )}
         </tbody>
       </table>
 

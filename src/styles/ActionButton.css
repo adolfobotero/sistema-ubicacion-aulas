@@ -22,7 +22,7 @@
   
   .action-btn.delete {
     background-color: #e74c3c;
-    color: white;
+    color: #e9d3d3;
   }
 
   .action-btn.view {
@@ -35,12 +35,12 @@
   }
 
   .action-btn.info {
-    background-color: #a6a4af;
+    background-color: #61a522;
     color: #333;
   }
   
   .action-btn.info:hover {
-    background-color: #606969;
+    background-color: #497c19;
   }
   
   .action-btn.delete:hover {
