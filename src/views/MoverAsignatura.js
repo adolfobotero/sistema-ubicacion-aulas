@@ -15,7 +15,7 @@ const MoverAsignatura = ({ setActiveSection }) => {
   const [successMsg, setSuccessMsg] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/aulas/asignadas', {
+    fetch(`${process.env.REACT_APP_API_URL}/api/aulas/asignadas`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
@@ -24,7 +24,7 @@ const MoverAsignatura = ({ setActiveSection }) => {
       .then(data => setAsignaturas(data))
       .catch(() => setErrorMsg('No se pudieron cargar las asignaturas.'));
 
-    fetch('http://localhost:3001/api/aulas?limite=1000')
+    fetch(`${process.env.REACT_APP_API_URL}/api/aulas?limite=1000`)
       .then(res => res.json())
       .then(data => setAulas(data.registros || data))
       .catch(() => setErrorMsg('No se pudieron cargar las aulas.'));
@@ -43,7 +43,7 @@ const MoverAsignatura = ({ setActiveSection }) => {
 
     if (id) {
       try {
-        const res = await fetch(`http://localhost:3001/api/asignaturas/${id}/profesores`);
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/asignaturas/${id}/profesores`);
         const data = await res.json();
         setProfesoresAsignatura(data);
       } catch (err) {
@@ -63,7 +63,7 @@ const MoverAsignatura = ({ setActiveSection }) => {
     }
 
     try {
-      const res = await fetch(`http://localhost:3001/api/aulas/${nuevaAula}/mover-asignatura`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/aulas/${nuevaAula}/mover-asignatura`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

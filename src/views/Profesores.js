@@ -20,7 +20,7 @@ const Profesores = () => {
 
   const fetchProfesores = useCallback (async () => {
     try {
-      const res = await fetch(`http://localhost:3001/api/profesores?pagina=${paginaActual}&limite=${porPagina}&busqueda=${encodeURIComponent(busqueda)}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/profesores?pagina=${paginaActual}&limite=${porPagina}&busqueda=${encodeURIComponent(busqueda)}`);
       const data = await res.json();
       setProfesores(data.registros);
       setTotal(data.total);
@@ -47,7 +47,7 @@ const Profesores = () => {
         p.codeProfesor && p.nombreProfesor && p.mailProfesor && p.mailProfesor.endsWith('@ucaldas.edu.co')
       );
       try {
-        const res = await fetch('http://localhost:3001/api/profesores/importar', {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/profesores/importar`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ profesores: profesoresValidos })
@@ -79,8 +79,8 @@ const Profesores = () => {
       return;
     }
     const url = editandoId
-      ? `http://localhost:3001/api/profesores/${editandoId}`
-      : 'http://localhost:3001/api/profesores';
+      ? `${process.env.REACT_APP_API_URL}/api/profesores/${editandoId}`
+      : `${process.env.REACT_APP_API_URL}/api/profesores`;
     const method = editandoId ? 'PUT' : 'POST';
     try {
       const res = await fetch(url, {
@@ -111,7 +111,7 @@ const Profesores = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('¿Eliminar este profesor?')) return;
     try {
-      await fetch(`http://localhost:3001/api/profesores/${id}`, {
+      await fetch(`${process.env.REACT_APP_API_URL}/api/profesores/${id}`, {
         method: 'DELETE'
       });
       fetchProfesores();
@@ -146,7 +146,7 @@ const Profesores = () => {
         />
         <label htmlFor="excel-upload" className="import-btn">Importar desde Excel</label>
         <input id="excel-upload" type="file" accept=".xlsx, .xls" onChange={handleImportExcel} style={{ display: 'none' }} />
-        <button onClick={() => window.open('http://localhost:3001/api/profesores/exportar', '_blank')} className="export-btn">
+        <button onClick={() => window.open(`${process.env.REACT_APP_API_URL}/api/profesores/exportar`, '_blank')} className="export-btn">
           Exportar a Excel
         </button>
       </div>

@@ -13,8 +13,8 @@ const AsignarProfesores = ({ asignatura, setActiveSection }) => {
     const cargarProfesores = async () => {
       try {
         const [resAsignados, resDisponibles] = await Promise.all([
-          fetch(`http://localhost:3001/api/asignaturas/${asignatura.idasignatura}/profesores`),
-          fetch(`http://localhost:3001/api/profesores?limite=1000`)
+          fetch(`${process.env.REACT_APP_API_URL}/api/asignaturas/${asignatura.idasignatura}/profesores`),
+          fetch(`${process.env.REACT_APP_API_URL}/api/profesores?limite=1000`)
         ]);
 
         const datosAsignados = await resAsignados.json();
@@ -40,7 +40,7 @@ const AsignarProfesores = ({ asignatura, setActiveSection }) => {
     }
 
     try {
-      const res = await fetch(`http://localhost:3001/api/asignaturas/${asignatura.idasignatura}/profesores`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/asignaturas/${asignatura.idasignatura}/profesores`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -63,11 +63,11 @@ const AsignarProfesores = ({ asignatura, setActiveSection }) => {
 
     try {
       await fetch(
-        `http://localhost:3001/api/asignaturas/${asignatura.idasignatura}/profesores/${idProfesor}`,
+        `${process.env.REACT_APP_API_URL}/api/asignaturas/${asignatura.idasignatura}/profesores/${idProfesor}`,
         { method: 'DELETE' }
       );
 
-      const res = await fetch(`http://localhost:3001/api/asignaturas/${asignatura.idasignatura}/profesores`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/asignaturas/${asignatura.idasignatura}/profesores`);
       const data = await res.json();
       setProfesoresAsignados(Array.isArray(data) ? data : []);
     } catch (err) {

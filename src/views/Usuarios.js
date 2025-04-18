@@ -21,7 +21,7 @@ const Usuarios = () => {
 
   const fetchUsuarios = useCallback (async () => {
     try {
-      const res = await fetch(`http://localhost:3001/api/usuarios?pagina=${paginaActual}&limite=${porPagina}&busqueda=${encodeURIComponent(busqueda)}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/usuarios?pagina=${paginaActual}&limite=${porPagina}&busqueda=${encodeURIComponent(busqueda)}`);
       const data = await res.json();
       setUsuarios(data.registros);
       setTotal(data.total);
@@ -49,8 +49,8 @@ const Usuarios = () => {
     }
 
     const url = editandoId
-      ? `http://localhost:3001/api/usuarios/${editandoId}`
-      : 'http://localhost:3001/api/usuarios';
+      ? `${process.env.REACT_APP_API_URL}/api/usuarios/${editandoId}`
+      : `${process.env.REACT_APP_API_URL}/api/usuarios`;
     const method = editandoId ? 'PUT' : 'POST';
 
     try {
@@ -94,7 +94,7 @@ const Usuarios = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('¿Eliminar este usuario?')) return;
     try {
-      await fetch(`http://localhost:3001/api/usuarios/${id}`, { method: 'DELETE' });
+      await fetch(`${process.env.REACT_APP_API_URL}/api/usuarios/${id}`, { method: 'DELETE' });
       fetchUsuarios();
     } catch (err) {
       setError('Error al eliminar usuario');

@@ -22,7 +22,7 @@ const Sedes = () => {
 
   const fetchSedes = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/sedes');
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/sedes`);
       if (!response.ok) throw new Error('Error al obtener sedes');
       const data = await response.json();
       setSedes(data);
@@ -48,7 +48,7 @@ const Sedes = () => {
       const sedesValidas = rows.filter(s => s.codeSede && s.nombreSede);
   
       try {
-        const res = await fetch('http://localhost:3001/api/sedes/importar', {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/sedes/importar`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
           body: JSON.stringify({ sedes: sedesValidas })
@@ -81,8 +81,8 @@ const Sedes = () => {
 
     try {
       const url = editandoId
-        ? `http://localhost:3001/api/sedes/${editandoId}`
-        : 'http://localhost:3001/api/sedes';
+        ? `${process.env.REACT_APP_API_URL}/api/sedes/${editandoId}`
+        : `${process.env.REACT_APP_API_URL}/api/sedes`;
 
       const method = editandoId ? 'PUT' : 'POST';
 
@@ -123,7 +123,7 @@ const Sedes = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('¿Estás seguro de eliminar esta sede?')) return;
     try {
-      const response = await fetch(`http://localhost:3001/api/sedes/${id}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/sedes/${id}`, {
         method: 'DELETE'
       });
       if (!response.ok) throw new Error('Error al eliminar sede');
@@ -187,7 +187,7 @@ const Sedes = () => {
       <div className="import-container">
         <label htmlFor="excel-upload" className="import-btn">Importar desde Excel</label>
         <input id="excel-upload" type="file" accept=".xlsx, .xls" onChange={handleImportExcel} style={{ display: 'none' }} />
-        <button onClick={() => window.open('http://localhost:3001/api/sedes/exportar', '_blank')} className="export-btn">
+        <button onClick={() => window.open(`${process.env.REACT_APP_API_URL}/api/sedes/exportar`, '_blank')} className="export-btn">
           Exportar a Excel
         </button>
       </div>

@@ -15,7 +15,7 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
 
   const fetchAsignaturas = useCallback (async () => {
     try {
-      const res = await fetch(`http://localhost:3001/api/asignaturas?pagina=${paginaActual}&limite=${porPagina}&busqueda=${encodeURIComponent(busqueda)}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/asignaturas?pagina=${paginaActual}&limite=${porPagina}&busqueda=${encodeURIComponent(busqueda)}`);
       const data = await res.json();
       setAsignaturas(data.registros);
       setTotal(data.total);
@@ -43,7 +43,7 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
       const asignaturasValidas = rows.filter(a => a.codeAsignatura && a.nombreAsignatura);
       
       try {
-        const res = await fetch('http://localhost:3001/api/asignaturas/importar', {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/asignaturas/importar`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
           body: JSON.stringify({ asignaturas: asignaturasValidas })
@@ -67,8 +67,8 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const url = editandoId
-      ? `http://localhost:3001/api/asignaturas/${editandoId}`
-      : 'http://localhost:3001/api/asignaturas';
+      ? `${process.env.REACT_APP_API_URL}/api/asignaturas/${editandoId}`
+      : `${process.env.REACT_APP_API_URL}/api/asignaturas`;
     const method = editandoId ? 'PUT' : 'POST';
 
     try {
@@ -97,7 +97,7 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
   const handleDelete = async (id) => {
     if (!window.confirm('¿Eliminar esta asignatura?')) return;
     try {
-      await fetch(`http://localhost:3001/api/asignaturas/${id}`, { method: 'DELETE' });
+      await fetch(`${process.env.REACT_APP_API_URL}/api/asignaturas/${id}`, { method: 'DELETE' });
       fetchAsignaturas();
     } catch (err) {
       setError('Error al eliminar la asignatura.');
@@ -147,7 +147,7 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
       />
       <label htmlFor="excel-asignaturas-upload" className="import-btn">Importar desde Excel</label>
       <input id="excel-asignaturas-upload" type="file" accept=".xlsx, .xls" onChange={handleImportExcel} style={{ display: 'none' }} />
-      <button onClick={() => window.open('http://localhost:3001/api/asignaturas/exportar', '_blank')} className="export-btn">
+      <button onClick={() => window.open(`${process.env.REACT_APP_API_URL}/api/asignaturas/exportar`, '_blank')} className="export-btn">
         Exportar a Excel
       </button>
       </div>

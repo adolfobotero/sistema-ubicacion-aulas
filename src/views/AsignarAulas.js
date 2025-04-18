@@ -17,11 +17,11 @@ const AsignarAulas = ({ aula, setActiveSection }) => {
   useEffect(() => {
     if (!aula) return;
 
-    fetch(`http://localhost:3001/api/aulas/${aula.idaula}/asignaturas`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/aulas/${aula.idaula}/asignaturas`)
       .then(res => res.json())
       .then(setAsignaturasAsignadas);
 
-    fetch('http://localhost:3001/api/asignaturas?limite=1000')
+    fetch(`${process.env.REACT_APP_API_URL}/api/asignaturas?limite=1000`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data.registros)) {
@@ -40,7 +40,7 @@ const AsignarAulas = ({ aula, setActiveSection }) => {
       return;
     }
 
-    fetch(`http://localhost:3001/api/asignaturas/${nuevaAsignatura}/profesores`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/asignaturas/${nuevaAsignatura}/profesores`)
       .then(res => res.json())
       .then(data => {
         setProfesoresDeAsignatura(Array.isArray(data) ? data : []);
@@ -73,7 +73,7 @@ const AsignarAulas = ({ aula, setActiveSection }) => {
     }
 
     try {
-      const res = await fetch(`http://localhost:3001/api/aulas/${aula.idaula}/asignaturas`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/aulas/${aula.idaula}/asignaturas`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -15,7 +15,7 @@ const HistorialAsignaturaAula = ({ asignatura, setActiveSection }) => {
       try {
         const token = localStorage.getItem('token');
         const res = await fetch(
-          `http://localhost:3001/api/asignaturas/${asignatura.idasignatura}/historial?pagina=${pagina}&limite=${porPagina}`,
+          `${process.env.REACT_APP_API_URL}/api/asignaturas/${asignatura.idasignatura}/historial?pagina=${pagina}&limite=${porPagina}`,
           {
             headers: { Authorization: `Bearer ${token}` }
           }

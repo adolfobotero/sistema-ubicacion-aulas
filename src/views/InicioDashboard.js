@@ -21,7 +21,7 @@ const InicioDashboard = () => {
 
     const fetchEstadisticas = async () => {
       try {
-        const res = await fetch('http://localhost:3001/admin/estadisticas', {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/admin/estadisticas`, {
           headers: {
             Authorization: `Bearer ${token}`
           }

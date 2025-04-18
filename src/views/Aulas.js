@@ -23,7 +23,7 @@ const Aulas = ({ setAsignaturaAulaSeleccionada, setActiveSection}) => {
 
   const fetchAulas = useCallback (async () => {
     try {
-      const res = await fetch(`http://localhost:3001/api/aulas?pagina=${paginaActual}&limite=${porPagina}&busqueda=${encodeURIComponent(busqueda)}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/aulas?pagina=${paginaActual}&limite=${porPagina}&busqueda=${encodeURIComponent(busqueda)}`);
       const data = await res.json();
       setAulas(data.registros);
       setTotal(data.total);
@@ -52,7 +52,7 @@ const Aulas = ({ setAsignaturaAulaSeleccionada, setActiveSection}) => {
       const aulasValidas = rows.filter(a => a.codeAula && a.nombreAula && a.codeSede);
 
       try {
-        const res = await fetch('http://localhost:3001/api/aulas/importar', {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/aulas/importar`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
           body: JSON.stringify({ aulas: aulasValidas })
@@ -86,7 +86,7 @@ const Aulas = ({ setAsignaturaAulaSeleccionada, setActiveSection}) => {
       );
   
       try {
-        const res = await fetch('http://localhost:3001/api/aulas/importar-asignaciones', {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/aulas/importar-asignaciones`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
           body: JSON.stringify({ asignaciones: validas })
@@ -120,7 +120,7 @@ const Aulas = ({ setAsignaturaAulaSeleccionada, setActiveSection}) => {
 
   const fetchSedes = async () => {
     try {
-      const res = await fetch('http://localhost:3001/api/sedes');
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/sedes`);
       const data = await res.json();
       setSedes(data);
     } catch (err) {
@@ -136,8 +136,8 @@ const Aulas = ({ setAsignaturaAulaSeleccionada, setActiveSection}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const url = editandoId
-      ? `http://localhost:3001/api/aulas/${editandoId}`
-      : 'http://localhost:3001/api/aulas';
+      ? `${process.env.REACT_APP_API_URL}/api/aulas/${editandoId}`
+      : `${process.env.REACT_APP_API_URL}/api/aulas`;
     const method = editandoId ? 'PUT' : 'POST';
 
     try {
@@ -180,7 +180,7 @@ const Aulas = ({ setAsignaturaAulaSeleccionada, setActiveSection}) => {
   const handleDelete = async (id) => {
     if (!window.confirm('¿Eliminar esta aula?')) return;
     try {
-      await fetch(`http://localhost:3001/api/aulas/${id}`, { method: 'DELETE' });
+      await fetch(`${process.env.REACT_APP_API_URL}/api/aulas/${id}`, { method: 'DELETE' });
       fetchAulas();
     } catch (err) {
       setError('Error al eliminar el aula.');
@@ -230,7 +230,7 @@ const Aulas = ({ setAsignaturaAulaSeleccionada, setActiveSection}) => {
       <input id="excel-aulas-upload" type="file" accept=".xlsx, .xls" onChange={handleImportExcel} style={{ display: 'none' }} />
       <label htmlFor="excel-asignaciones-upload" className="import-btn">Importar Asignaciones</label>
       <input id="excel-asignaciones-upload" type="file" accept=".xlsx, .xls" onChange={handleImportAsignaciones} style={{ display: 'none' }} />
-      <button onClick={() => window.open('http://localhost:3001/api/aulas/exportar', '_blank')} className="export-btn">
+      <button onClick={() => window.open(`${process.env.REACT_APP_API_URL}/api/aulas/exportar`, '_blank')} className="export-btn">
         Exportar a Excel
       </button>
       </div>
