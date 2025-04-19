@@ -8,7 +8,8 @@ const InicioDashboard = () => {
     aulas: 0,
     profesores: 0,
     asignaturas: 0,
-    usuarios: 0
+    usuarios: 0,
+    reubicaciones: 0
   });
   const [nombreUsuario, setNombreUsuario] = useState('');
 
@@ -61,6 +62,10 @@ const InicioDashboard = () => {
         <div className="tarjeta">
           <h3>{stats.usuarios}</h3>
           <p>Usuarios del sistema</p>
+        </div>
+        <div className="tarjeta">
+          <h3>{stats.reubicaciones}</h3>
+          <p>Reubicaciones</p>
         </div>
       </div>
     </div>

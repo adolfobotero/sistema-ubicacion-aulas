@@ -5,6 +5,7 @@ import * as XLSX from 'xlsx';
 
 const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
   const [asignaturas, setAsignaturas] = useState([]);
+  const [detalleAsignatura, setDetalleAsignatura] = useState(null);
   const [form, setForm] = useState({ codeAsignatura: '', nombreAsignatura: '' });
   const [editandoId, setEditandoId] = useState(null);
   const [error, setError] = useState('');
@@ -27,6 +28,7 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
 
   useEffect(() => {
     fetchAsignaturas();
+    setDetalleAsignatura(null);
   }, [fetchAsignaturas]);
 
   const handleImportExcel = (e) => {
@@ -58,6 +60,17 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
       }
     };
     reader.readAsArrayBuffer(file);
+  };
+
+  const cargarDetalle = async (idAsignatura) => {
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/asignaturas/${idAsignatura}/detalle`);
+      const data = await res.json();
+      setDetalleAsignatura(data);
+    } catch (err) {
+      console.error('Error al cargar detalle:', err);
+      setDetalleAsignatura(null);
+    }
   };  
 
   const handleInputChange = (e) => {
@@ -173,6 +186,7 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
                     setAsignaturaSeleccionada(a);
                     setActiveSection('asignarProfesores');
                   }} />
+                  <ActionButton text="Ver detalle" type="view" onClick={() => cargarDetalle(a.idasignatura)} />
                   <ActionButton text="Historial" type="info" onClick={() => {
                     setAsignaturaSeleccionada(a);
                     setActiveSection('historialAsignatura');
@@ -188,6 +202,26 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
         </tbody>
       </table>
 
+      {detalleAsignatura && (
+        <div className="detalle-asignatura">
+          <button className="ocultar-detalle-btn" onClick={() => setDetalleAsignatura(null)}>
+            ✖ Ocultar detalle
+          </button>
+          <h4>Detalle de Asignatura</h4>
+          {detalleAsignatura.length > 0 ? (
+            <ul>
+              {detalleAsignatura.map((d, i) => (
+                <li key={i}>
+                  <strong>{d.nombreprofesor}</strong> ({d.mailprofesor}) – {d.codeaula} {d.nombreaula}, {d.diasemana} de {d.horainicio} a {d.horafin}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No hay asignaciones registradas.</p>
+          )}
+        </div>
+      )}
+      
       <div className="paginacion">
         <button onClick={() => setPaginaActual(p => Math.max(p - 1, 1))} disabled={paginaActual === 1}>
           ⬅ Anterior
