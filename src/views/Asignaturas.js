@@ -168,10 +168,10 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
       <table className="data-table">
         <thead>
           <tr>
-            <th>Código</th>
-            <th>Nombre</th>
-            <th>Profesores</th>
-            <th>Acciones</th>
+            <th style={{ width: '50px' }}>Código</th>
+            <th style={{ width: '200px' }}>Nombre</th>
+            <th style={{ width: '280px' }}>Profesores</th>
+            <th style={{ width: '470px' }}>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -180,19 +180,25 @@ const Asignaturas = ({ setAsignaturaSeleccionada, setActiveSection }) => {
               <tr key={a.idasignatura}>
                 <td>{a.codeasignatura}</td>
                 <td>{a.nombreasignatura}</td>
-                <td>{a.profesores || 'No asignado'}</td>
                 <td>
-                  <ActionButton text="Profesores" type="view" onClick={() => {
-                    setAsignaturaSeleccionada(a);
-                    setActiveSection('asignarProfesores');
-                  }} />
-                  <ActionButton text="Ver detalle" type="view" onClick={() => cargarDetalle(a.idasignatura)} />
-                  <ActionButton text="Historial" type="info" onClick={() => {
-                    setAsignaturaSeleccionada(a);
-                    setActiveSection('historialAsignatura');
-                  }} />
-                  <ActionButton text="Editar" type="edit" onClick={() => handleEdit(a)} />
-                  <ActionButton text="Eliminar" type="delete" onClick={() => handleDelete(a.idasignatura)} />
+                  {(a.profesores || 'No asignado')
+                    .split(', ')
+                    .map((prof, i) => <div key={i}>{prof}</div>)}
+                </td>
+                <td>
+                  <div className="acciones-flex">
+                    <ActionButton text="Profesores" type="view" onClick={() => {
+                      setAsignaturaSeleccionada(a);
+                      setActiveSection('asignarProfesores');
+                    }} />
+                    <ActionButton text="Detalle" type="view" onClick={() => cargarDetalle(a.idasignatura)} />
+                    <ActionButton text="Historial" type="info" onClick={() => {
+                      setAsignaturaSeleccionada(a);
+                      setActiveSection('historialAsignatura');
+                    }} />
+                    <ActionButton text="Editar" type="edit" onClick={() => handleEdit(a)} />
+                    <ActionButton text="Eliminar" type="delete" onClick={() => handleDelete(a.idasignatura)} />
+                  </div>
                 </td>
               </tr>
             ))

@@ -167,8 +167,10 @@ const Profesores = () => {
               <td>{p.nombreprofesor}</td>
               <td>{p.mailprofesor}</td>
               <td>
-                <ActionButton text="Editar" type="edit" onClick={() => handleEdit(p)} />
-                <ActionButton text="Eliminar" type="delete" onClick={() => handleDelete(p.idprofesor)} />
+                <div className="acciones-flex">
+                  <ActionButton text="Editar" type="edit" onClick={() => handleEdit(p)} />
+                  <ActionButton text="Eliminar" type="delete" onClick={() => handleDelete(p.idprofesor)} />
+                </div>
               </td>
             </tr>
           ))}

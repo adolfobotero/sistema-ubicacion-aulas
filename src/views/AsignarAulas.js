@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/Gestion.css';
+import ActionButton from '../components/ActionButton';
 
 const AsignarAulas = ({ aula, setActiveSection }) => {
   const [asignaturasDisponibles, setAsignaturasDisponibles] = useState([]);
@@ -10,7 +11,6 @@ const AsignarAulas = ({ aula, setActiveSection }) => {
   const [diaSemana, setDiaSemana] = useState('');
   const [horaInicio, setHoraInicio] = useState('');
   const [horaFin, setHoraFin] = useState('');
-  const [editando, setEditando] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
@@ -58,7 +58,6 @@ const AsignarAulas = ({ aula, setActiveSection }) => {
     setDiaSemana('');
     setHoraInicio('');
     setHoraFin('');
-    setEditando(null);
     setErrorMsg('');
     setSuccessMsg('');
   };
@@ -92,7 +91,7 @@ const AsignarAulas = ({ aula, setActiveSection }) => {
 
       const data = await res.json();
       setAsignaturasAsignadas(data);
-      setSuccessMsg(editando ? 'Horario actualizado' : 'Asignación guardada');
+      setSuccessMsg('Asignación guardada');
       limpiar();
       setTimeout(() => setSuccessMsg(''), 3000);
     } catch (err) {
@@ -100,6 +99,38 @@ const AsignarAulas = ({ aula, setActiveSection }) => {
       setErrorMsg(err.message);
     }
   };
+
+  const quitarAsignacion = async (a) => {
+    setErrorMsg('');
+    const token = localStorage.getItem('token');
+
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/aulas/${aula.idaula}/asignaturas`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          idAsignatura: a.idasignatura,
+          diaSemana: a.diasemana,
+          horaInicio: a.horainicio,
+          horaFin: a.horafin
+        })
+      });
+
+      if (!res.ok) throw new Error((await res.json()).message || 'Error al quitar');
+
+      const data = await res.json();
+      setAsignaturasAsignadas(data);
+      setSuccessMsg('Asignación eliminada');
+      setTimeout(() => setSuccessMsg(''), 3000);
+    } catch (err) {
+      console.error(err);
+      setErrorMsg(err.message);
+    }
+  };
+  
 
   return (
     <div className="form-container">
@@ -109,8 +140,8 @@ const AsignarAulas = ({ aula, setActiveSection }) => {
       {errorMsg && <div className="error-msg">{errorMsg}</div>}
       {successMsg && <div className="success-msg">{successMsg}</div>}
 
-      <div className={`form-flex ${editando ? 'reasignando' : ''}`}>
-        <select value={nuevaAsignatura} onChange={e => setNuevaAsignatura(e.target.value)} disabled={editando} required>
+      <div className="form-flex">
+        <select value={nuevaAsignatura} onChange={e => setNuevaAsignatura(e.target.value)} required>
           <option value="">Seleccionar asignatura</option>
           {asignaturasDisponibles.map(a => (
             <option key={a.idasignatura} value={a.idasignatura}>
@@ -141,8 +172,8 @@ const AsignarAulas = ({ aula, setActiveSection }) => {
         <input type="time" value={horaInicio} onChange={(e) => setHoraInicio(e.target.value)} required />
         <input type="time" value={horaFin} onChange={(e) => setHoraFin(e.target.value)} required />
 
-        <button onClick={guardarAsignacion}>{editando ? 'Actualizar' : 'Asignar'}</button>
-        {editando && <button className="action-btn cancel" onClick={limpiar}>Cancelar</button>}
+        <button onClick={guardarAsignacion}>{'Asignar'}</button>
+        <button className="action-btn cancel" onClick={limpiar}>Cancelar</button>
       </div>
       
       <h4 style={{ marginTop: '2rem' }}>Asignaturas asignadas:</h4>
@@ -167,18 +198,9 @@ const AsignarAulas = ({ aula, setActiveSection }) => {
                 <td>{a.horainicio}</td>
                 <td>{a.horafin}</td>
                 <td>
-                  <button
-                    className="action-btn edit"
-                    onClick={() => {
-                      setNuevaAsignatura(a.idasignatura);
-                      setDiaSemana(a.diasemana);
-                      setHoraInicio(a.horainicio);
-                      setHoraFin(a.horafin);
-                      setEditando(a);
-                    }}
-                  >
-                    Editar
-                  </button>
+                  <div className="acciones-flex">
+                    <ActionButton text="Quitar" type="delete" onClick={() => quitarAsignacion(a)} />
+                  </div>
                 </td>
               </tr>
             ))

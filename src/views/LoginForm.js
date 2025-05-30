@@ -60,7 +60,9 @@ const LoginForm = () => {
 
       localStorage.setItem('token', data.token);
 
-      if (data.usuario.rolusuario === 'admin') {
+      const { rol } = jwtDecode(data.token);
+
+      if (rol === 'admin') {
         navigate('/admin/dashboard');
       } else {
         navigate('/chatbot');

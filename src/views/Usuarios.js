@@ -114,7 +114,7 @@ const Usuarios = () => {
         <select name="rolUsuario" value={form.rolUsuario} onChange={handleInputChange} required>
           <option value="">Rol</option>
           <option value="admin">Admin</option>
-          <option value="estudiante">Estudiante</option>
+          {/*<option value="estudiante">Estudiante</option>*/}
         </select>
         <button type="submit">{editandoId ? 'Actualizar' : 'Agregar Usuario'}</button>
       </form>
@@ -154,8 +154,10 @@ const Usuarios = () => {
               <td><span className={`rol-tag ${u.rolusuario}`}>{u.rolusuario}</span></td>
               <td>{u.metodologin}</td>
               <td>
-                <ActionButton text="Editar" type="edit" onClick={() => handleEdit(u)} />
-                <ActionButton text="Eliminar" type="delete" onClick={() => handleDelete(u.idusuario)} />
+                <div className="acciones-flex">
+                  <ActionButton text="Editar" type="edit" onClick={() => handleEdit(u)} />
+                  <ActionButton text="Eliminar" type="delete" onClick={() => handleDelete(u.idusuario)} />
+                </div>
               </td>
             </tr>
           ))}

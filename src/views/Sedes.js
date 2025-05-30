@@ -220,8 +220,10 @@ const Sedes = () => {
                 <td>{sede.latitudsede}</td>
                 <td>{sede.longitudsede}</td>
                 <td>
-                  <ActionButton text="Editar" type="edit" onClick={() => handleEdit(sede)} />
-                  <ActionButton text="Eliminar" type="delete" onClick={() => handleDelete(sede.idsede)} />
+                  <div className="acciones-flex">
+                    <ActionButton text="Editar" type="edit" onClick={() => handleEdit(sede)} />
+                    <ActionButton text="Eliminar" type="delete" onClick={() => handleDelete(sede.idsede)} />
+                  </div>
                 </td>
               </tr>
             ))}

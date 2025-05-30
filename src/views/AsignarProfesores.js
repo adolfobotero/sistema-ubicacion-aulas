@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/Gestion.css';
+import ActionButton from '../components/ActionButton';
 
 const AsignarProfesores = ({ asignatura, setActiveSection }) => {
   const [profesoresDisponibles, setProfesoresDisponibles] = useState([]);
@@ -108,12 +109,9 @@ const AsignarProfesores = ({ asignatura, setActiveSection }) => {
               <td>{p.nombreprofesor}</td>
               <td>{p.mailprofesor}</td>
               <td>
-                <button
-                  className="action-btn delete"
-                  onClick={() => eliminarProfesor(p.idprofesor)}
-                >
-                  Quitar
-                </button>
+                <div className="acciones-flex">
+                  <ActionButton text="Quitar" type="delete" onClick={() => eliminarProfesor(p.idprofesor)} />
+                </div>
               </td>
             </tr>
           )) : (

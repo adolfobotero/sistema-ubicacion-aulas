@@ -261,12 +261,14 @@ const Aulas = ({ setAsignaturaAulaSeleccionada, setActiveSection}) => {
               <td>{aula.edificioaula}</td>
               <td>{aula.pisoaula}</td>
               <td>
-                <ActionButton text="Asignaturas" type="view" onClick={() => {
-                  setAsignaturaAulaSeleccionada(aula);
-                  setActiveSection('asignarAulas');
-                }} />
-                <ActionButton text="Editar" type="edit" onClick={() => handleEdit(aula)} />
-                <ActionButton text="Eliminar" type="delete" onClick={() => handleDelete(aula.idaula)} />
+                <div className="acciones-flex">
+                  <ActionButton text="Asignaturas" type="view" onClick={() => {
+                    setAsignaturaAulaSeleccionada(aula);
+                    setActiveSection('asignarAulas');
+                  }} />
+                  <ActionButton text="Editar" type="edit" onClick={() => handleEdit(aula)} />
+                  <ActionButton text="Eliminar" type="delete" onClick={() => handleDelete(aula.idaula)} />
+                </div>
               </td>
             </tr>
           ))}
