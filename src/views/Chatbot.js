@@ -12,17 +12,22 @@ const Chatbot = () => {
   const navigate = useNavigate();
 
   const [messages, setMessages] = useState([
-    { from: 'bot', text: '¡Hola! 👋 Soy tu asistente de aulas. ¿Qué necesitas encontrar hoy?' }
+    { from: 'bot', text: '¡Hola! 👋 Soy Auli, tu asistente de aulas. ¿Qué aula necesitas encontrar hoy?' }
   ]);
   const [input, setInput] = useState('');
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [usuario, setUsuario] = useState(null);
 
-  // Coordenadas iniciales centradas en la Universidad de Caldas (ejemplo)
-  //const [coordenadas, setCoordenadas] = useState({ lat: 5.0703, lng: -75.5138 });
-  const [coordenadas, setCoordenadas] = useState({ lat: 5.055760183855939, lng: -75.49397150793457 });
-  
-  // Captura token desde la URL
+  // Aula por defecto
+  const [coordenadas, setCoordenadas] = useState({
+    lat: 5.055975734921131,
+    lng: -75.49280038325303
+  });
+
+  // Estado para la ubicación actual del usuario
+  const [miUbicacion, setMiUbicacion] = useState(null);
+
+  // Captura token desde URL
   useEffect(() => {
     const query = new URLSearchParams(location.search);
     const tokenFromURL = query.get('token');
@@ -34,7 +39,7 @@ const Chatbot = () => {
     }
   }, [location, navigate]);
 
-  // Decodificar token y establecer usuario
+  // Decodifica token y usuario
   useEffect(() => {
     if (token) {
       try {
@@ -42,19 +47,36 @@ const Chatbot = () => {
         const usuarioLocal = localStorage.getItem('usuario');
 
         if (usuarioLocal) {
-          const userParsed = JSON.parse(usuarioLocal);
-          console.log('Usuario desde localStorage:', userParsed);
-          setUsuario(userParsed);
+          setUsuario(JSON.parse(usuarioLocal));
         } else {
-          console.log('Token decodificado:', decoded);
           setUsuario(decoded);
         }
       } catch (err) {
-        console.error('Error decodificando el token:', err.message);
+        console.error('Error decodificando token:', err.message);
       }
     }
   }, [token]);
 
+  // Obtiene ubicación actual del navegador
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setMiUbicacion({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.error('Error obteniendo ubicación actual:', error);
+        }
+      );
+    } else {
+      console.error('Geolocalización no soportada.');
+    }
+  }, []);
+
+  // Enviar pregunta
   const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -69,13 +91,14 @@ const Chatbot = () => {
       });
 
       setMessages(prev => [...prev, { from: 'bot', text: res.data.mensaje }]);
-      setCoordenadas(res.data.coordenadas); // actualiza el mapa con la nueva ubicación
+      setCoordenadas(res.data.coordenadas); // Actualiza aula en el mapa
     } catch (error) {
       const mensajeError = error.response?.data?.mensaje || 'No pude encontrar esa aula.';
       setMessages(prev => [...prev, { from: 'bot', text: mensajeError }]);
     }
   };
 
+  // Cerrar sesión
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate('/');
@@ -116,12 +139,13 @@ const Chatbot = () => {
         <div className="map-section">
           <h3>Mapa del Campus</h3>
           <div className="map-placeholder">
-            <MapaAula coordenadas={coordenadas} />
+            {/* PASA TU UBICACIÓN */}
+            <MapaAula coordenadas={coordenadas} miUbicacion={miUbicacion} />
           </div>
         </div>
       </div>
 
-      {/* Mostrar popup de consentimiento si aplica */}
+      {/* Popup consentimiento */}
       <PopupNotificacion usuario={usuario} token={token} />
     </div>
   );

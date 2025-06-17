@@ -48,12 +48,15 @@ body {
     display: flex;
     flex-direction: column;
     padding: 1rem;
+    max-height: calc(100vh - 140px);
+    overflow: hidden;
   }
   
   .chat-messages {
     flex: 1;
     overflow-y: auto;
     padding-right: 0.5rem;
+    max-height: calc(100vh - 100px);
   }
   
   .message {
@@ -129,7 +132,7 @@ body {
     background-color: #f0f0f0;
     border-radius: 8px;
     text-align: center;
-    padding: 2rem;
+    padding: 1rem;
     color: #666;
   }
 
